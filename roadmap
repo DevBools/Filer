@@ -1,0 +1,318 @@
+Roadmap
+
+- Remove files from database after download immediately
+- If files are not downloaded within 6 hours, remove them from database, to do this add time to database when uploading
+We're expecting only one result: Each download code should be unique and associated with only one file.
+- Max ... mb per upload
+- Remove only uppercase letters
+
+
+Packages
+- Flask
+- Sqlite3
+- DateTime
+
+
+what is the html contains a form that has to be saved on a database in the backend, walk me through all the steps that happen begin to end
+ChatGPT zei:
+ChatGPT
+
+Certainly! Let’s walk through the steps of how a web application handles a form submission that needs to be saved to a database in the backend. We'll use an example scenario where a user fills out a registration form that includes their name, email, and password. The steps will include the front-end HTML form, sending the data to the backend, processing the data, and finally saving it in a database.
+1. Frontend: HTML Form Creation
+
+First, you'll create an HTML form for users to input their data. Here’s a simple registration form:
+
+html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+</head>
+<body>
+    <h1>Register</h1>
+    <form action="/register" method="POST">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <br>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>
+
+2. User Interaction with the Form
+
+    User fills out the form: The user enters their name, email, and password.
+    User submits the form: When the user clicks the "Register" button, the form data is sent to the server.
+
+3. Request Handling by the Web Server
+
+    Form Submission: The form data is submitted via a POST request to the /register endpoint.
+    Web Server Receives the Request: The web server (e.g., Nginx, Apache) listens on port 80/443 for incoming requests.
+
+4. Routing to the Backend (Flask)
+
+    URL Matching: The web server checks its configuration and finds that requests to /register should be handled by the Flask application.
+    Forwarding the Request: The web server forwards the request to the Flask app running on a separate port (e.g., port 5000).
+
+5. Backend Processing in Flask
+
+Here’s how the Flask application might handle the form submission:
+
+python
+
+from flask import Flask, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+db = SQLAlchemy(app)
+
+# Database model
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+
+# Create the database
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
+@app.route('/register', methods=['POST'])
+def register():
+    # Get form data
+    name = request.form['name']
+    email = request.form['email']
+    password = request.form['password']
+
+    # Create a new user instance
+    new_user = User(name=name, email=email, password=password)
+
+    # Save to database
+    db.session.add(new_user)
+    db.session.commit()
+
+    # Redirect to a success page or homepage
+    return redirect(url_for('success'))
+
+@app.route('/success')
+def success():
+    return "Registration successful!"
+
+if __name__ == '__main__':
+    app.run(port=5000)
+
+6. Steps Inside the Flask Application
+
+    Route Handling: The Flask app defines a route /register that listens for POST requests.
+    Data Retrieval: Flask uses request.form to retrieve the submitted form data (name, email, password).
+    Create User Instance: A new User instance is created with the provided data.
+    Database Interaction:
+        Add to Session: The new user instance is added to the session using db.session.add(new_user).
+        Commit the Session: db.session.commit() is called to save the user to the database. This executes the SQL commands to insert the data.
+    Redirect: After saving, the user is redirected to a success page (or another endpoint).
+
+7. Database Interaction
+
+    Database Connection: The Flask app connects to a SQLite database named users.db. You could also use other databases like MySQL, PostgreSQL, etc.
+    Table Creation: The User class defines the schema for the users table, and the database is created if it doesn't exist when the app starts.
+
+8. Response to the User
+
+    Success Page: After successful registration, the user is redirected to a success page that confirms their registration.
+    User Experience: The user sees a message saying, "Registration successful!" This indicates that their information has been successfully saved.
+
+Summary of the Steps
+
+    HTML Form Creation: A registration form is created using HTML.
+    User Submits Form: User fills out and submits the form.
+    Request Handling: The web server receives the POST request.
+    Routing: The request is forwarded to the Flask backend.
+    Form Data Processing: The backend retrieves form data and creates a new user instance.
+    Database Interaction: The user data is saved in the database.
+    Response Generation: The user is redirected to a success page confirming their registration.
+
+This flow effectively illustrates the interaction between the frontend and backend when submitting a form to save data to a database, showcasing how web applications typically handle user inputs and data storage.
+Je zei:
+include the dns etc
+ChatGPT zei:
+ChatGPT
+
+Sure! Let’s expand on the entire process of submitting a form that saves data to a database in the backend, including the roles of DNS and the web server. We’ll cover everything from the user entering a URL in their browser to the backend processing the data.
+Complete Workflow: From DNS to Database
+1. User Enters URL
+
+    User Action: The user types a URL (e.g., http://example.com/register) into their browser.
+    Browser: The browser is responsible for sending a request to the server hosting the website.
+
+2. DNS Resolution
+
+    Domain Name System (DNS): Before sending the request, the browser needs to resolve the domain name (e.g., example.com) to an IP address.
+    DNS Query: The browser sends a DNS query to a DNS server to find the IP address associated with the domain.
+    DNS Response: The DNS server responds with the corresponding IP address of the web server hosting the application.
+
+3. Sending the HTTP Request
+
+    HTTP Request: The browser sends an HTTP request to the resolved IP address of the web server, targeting the /register endpoint with a POST method, typically containing the form data (name, email, password).
+
+4. Web Server Receives the Request
+
+    Web Server (e.g., Nginx or Apache): The web server listens on port 80 (HTTP) or 443 (HTTPS).
+    Request Handling: The web server examines the incoming request.
+
+5. Routing Logic in the Web Server
+
+    URL Matching: The web server checks its configuration to determine how to handle the request:
+        If the request is for static content (e.g., images, CSS), it serves those files directly.
+        If the request matches a defined route (like /register), it forwards the request to the backend application (Flask) running on a different port (e.g., port 5000).
+
+6. Forwarding the Request to the Backend
+
+    Reverse Proxying: The web server acts as a reverse proxy, forwarding the request to the Flask application. This is typically done via a configured endpoint in the web server.
+
+Example Configuration for Nginx
+
+Here’s a sample Nginx configuration that handles the above requests:
+
+nginx
+
+server {
+    listen 80;
+    server_name example.com;
+
+    # Serve static files
+    location /static {
+        alias /var/www/example/static;  # Static files served from this directory
+    }
+
+    # Forward dynamic requests to Flask
+    location / {
+        proxy_pass http://localhost:5000;  # Flask app running on port 5000
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}
+
+7. Backend Processing in Flask
+
+Once the request is forwarded to Flask, the backend processes the form submission:
+
+python
+
+from flask import Flask, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+db = SQLAlchemy(app)
+
+# Database model
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+
+# Create the database
+@app.before_first_request
+def create_tables():
+    db.create_all()
+
+@app.route('/register', methods=['POST'])
+def register():
+    # Get form data
+    name = request.form['name']
+    email = request.form['email']
+    password = request.form['password']
+
+    # Create a new user instance
+    new_user = User(name=name, email=email, password=password)
+
+    # Save to database
+    db.session.add(new_user)
+    db.session.commit()
+
+    # Redirect to a success page
+    return redirect(url_for('success'))
+
+@app.route('/success')
+def success():
+    return "Registration successful!"
+
+if __name__ == '__main__':
+    app.run(port=5000)  # Flask runs on port 5000
+
+Steps Inside the Flask Application:
+
+    Route Handling: Flask defines a route for /register that handles POST requests.
+    Data Retrieval: It retrieves form data using request.form.
+    Create User Instance: A new User instance is created with the submitted data.
+    Database Interaction:
+        Add to Session: The new user instance is added to the database session.
+        Commit the Session: Changes are committed to the database.
+    Redirect: After saving, the user is redirected to a success page.
+
+8. Database Interaction
+
+    Database Connection: The Flask app connects to a database (SQLite, MySQL, etc.). In this case, it’s SQLite stored in users.db.
+    Table Creation: The User model defines the structure of the database table.
+    Insertion: The user's data is inserted into the database.
+
+9. Response to the User
+
+    Success Page: After successful registration, the user is redirected to a page that confirms their registration.
+    User Experience: The user sees a message stating "Registration successful!" indicating that their data has been saved.
+
+Full Request Flow Summary
+
+    User Action: User enters http://example.com/register in their browser.
+    DNS Resolution: The browser queries the DNS server for the IP address associated with example.com.
+    HTTP Request: The browser sends a POST request with form data to the resolved IP address.
+    Web Server Receives Request: The web server receives the request.
+    Routing Logic:
+        Web server serves static files directly or forwards the request to the Flask backend.
+    Backend Processing:
+        Flask retrieves form data and creates a new user instance.
+        The user data is saved to the database.
+    Response Generation: The user is redirected to a success page, confirming their registration.
+
+Conclusion
+
+This workflow provides a comprehensive view of how a web application handles form submissions, from the user entering a URL to the backend saving data in a database, including the essential role of DNS resolution and web server routing. Each component works together to ensure a seamless user experience and efficient data handling.
+
+
+
+Step 2: Set Up Your Project Structure
+
+Create a directory for your project. Inside this directory, create the following subdirectories and files:
+
+
+my_project/
+│
+├── app/
+│   ├── app.py               # Main Flask application
+│   ├── requirements.txt     # Python dependencies
+│   └── Dockerfile           # Dockerfile for the Flask app
+│
+├── nginx/
+│   └── default.conf         # Nginx configuration
+│
+└── docker-compose.yml       # Docker Compose file
+
+venv\Scripts\activate
+python c:/Users/jipde/OneDrive/Bureaublad/Apps/Filer/app.py/main.py

@@ -1,0 +1,64 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    background-color: #FCFCFC;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.container {
+    text-align: center;
+}
+
+.bloc {
+  width: 70vw;
+  height: 80vh;
+  border-radius: 52px;
+  background-color: #ffffff;
+  box-shadow: 0px 406px 114px 0px rgba(0, 0, 0, 0.00), 0px 260px 104px 0px rgba(0, 0, 0, 0.01), 0px 146px 88px 0px rgba(0, 0, 0, 0.05), 0px 65px 65px 0px rgba(0, 0, 0, 0.09), 0px 16px 36px 0px rgba(0, 0, 0, 0.10);
+}
+
+.bloc_layer1 {
+  position: absolute;
+  width: 35vw;
+  height: 76vh;
+  border-radius: px;
+  background-color: #f5f5f5;
+  z-index: 3;
+  left: 49vw;
+}
+
+.action-button {
+  background-color: rgb(255, 255, 255);
+  border-radius: 38px;
+  border-width: 0;
+  color: #0c0c0c;
+  cursor: pointer;
+  display: inline-block;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 520;
+  width: 320px;
+  height: 320px;
+  margin: 0px 20px;
+  box-shadow: 0px 4px 9.3px 0px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.upload-button:hover {
+    background-color: #fafafa;
+}
+
+.file-input {
+  display: block; /* Change to block to allow centering */
+  margin: 20px auto; /* Center the input horizontally and add margin above */
+  width: 100%; /* Optional: Set width to 100% for full width */
+  max-width: 320px; /* Optional: Set a max width for better appearance */
+}
+
