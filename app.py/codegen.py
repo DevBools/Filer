@@ -10,7 +10,7 @@ def generate_random_char():
 def check_database_for_code(code):
     conn = sqlite3.connect('main.db')
     cursor = conn.cursor()
-    cursor.execute('CREATE TABLE IF NOT EXISTS code_file_db (code TEXT, file BLOB, filename TEXT, file_time TEXT)')
+    cursor.execute('CREATE TABLE IF NOT EXISTS code_file_db (code TEXT, file_time TEXT, filename TEXT, file BLOB)')
     cursor.execute('SELECT COUNT(*) FROM code_file_db WHERE code = ?', (code,))
     code_exists = cursor.fetchone()[0] > 0
     conn.close()

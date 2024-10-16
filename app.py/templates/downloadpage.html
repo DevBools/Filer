@@ -11,9 +11,9 @@
 <body>
     <div class="container"> 
     <h1>Download your files</h1>
-    <form action=" {{ url_for('download_file') }}" method="POST">
+    <form action=" {{ url_for('download_files') }}" method="POST">
         <label for="download_code"> Enter your download code: </label>
-        <input type="text" id="download_code" name="download_file" required>
+        <input type="text" id="download_code" name="unique_code" required>
         <button type="submit">Download</button>
     </form>
     </div>

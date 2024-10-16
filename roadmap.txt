@@ -1,10 +1,9 @@
 Roadmap
 
-- Remove files from database after download immediately
-- If files are not downloaded within 6 hours, remove them from database, to do this add time to database when uploading
-We're expecting only one result: Each download code should be unique and associated with only one file.
-- Max ... mb per upload
-- Remove only uppercase letters
+- Max ... mb per upload [done]
+- Selecting no files and pressing upload leads to an error [done]
+- change order of create table and db in codegen [done]
+- check if deletefile works with multiple files with same code [done]
 
 
 Packages

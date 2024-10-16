@@ -11,10 +11,10 @@ def binaryconverter(insert_file):
         return blobdata
 
 
-def insertdata(file_data, download_code, filename, file_time):
+def insertdata(download_code, upload_time, filename, file_data):
     conn = sqlite3.connect('main.db')
     cursor = conn.cursor()
-    cursor.execute('CREATE TABLE IF NOT EXISTS code_file_db (code TEXT, file BLOB, filename TEXT, file_time TEXT)')
-    cursor.execute('INSERT INTO code_file_db (code, file, filename, file_time) VALUES (?, ?, ?, ?)', (download_code, file_data, filename, file_time))
+    cursor.execute('CREATE TABLE IF NOT EXISTS code_file_db (code TEXT, file_time TEXT, filename TEXT, file BLOB)') 
+    cursor.execute('INSERT INTO code_file_db (code, file_time, filename, file) VALUES (?, ?, ?, ?)', (download_code, upload_time, filename, file_data))
     conn.commit()
     conn.close()
